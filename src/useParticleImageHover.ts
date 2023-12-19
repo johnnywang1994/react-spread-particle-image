@@ -1,4 +1,4 @@
-import { useRef, useEffect, useTransition } from "react";
+import { useRef, useEffect } from "react";
 import useCanvasImage from "src/useCanvasImage.js";
 
 export type Options = {
@@ -27,8 +27,6 @@ export default function useParticleImageHover({
   forceSpeed = 5,
   returnSpeed = 0.1,
 }: Options = {}) {
-  const [_, startTransition] = useTransition();
-
   const {
     canvasRef,
     ratioRef,
@@ -41,6 +39,7 @@ export default function useParticleImageHover({
     x: Infinity,
     y: Infinity,
   });
+  const frameRef = useRef(0);
 
   const FORCE_RADIUS = radius; // hover radius
   const FORCE_SPEED = forceSpeed; // push speed
@@ -92,12 +91,9 @@ export default function useParticleImageHover({
   };
 
   const drawCanvas = () => {
-    // prevent animation stock rendering
-    startTransition(() => {
-      updateParticles();
-      drawParticles();
-      requestAnimationFrame(drawCanvas);
-    });
+    updateParticles();
+    drawParticles();
+    frameRef.current = requestAnimationFrame(drawCanvas);
   };
 
   useEffect(() => {
@@ -109,13 +105,11 @@ export default function useParticleImageHover({
         const touch = (event as TouchEvent).touches?.[0] || event;
         mousePositionRef.current = {
           x:
-            (touch.pageX - rect.left ||
-              (event as MouseEvent).offsetX - window.pageXOffset ||
-              window.scrollX) * ratio,
+            (touch.pageX - rect.left - window.pageXOffset || window.scrollX) *
+            ratio,
           y:
-            (touch.pageY - rect.top ||
-              (event as MouseEvent).offsetY - window.pageYOffset ||
-              window.scrollY) * ratio,
+            (touch.pageY - rect.top - window.pageYOffset || window.scrollY) *
+            ratio,
         };
       };
       const handleMouseLeave = () => {
@@ -143,6 +137,7 @@ export default function useParticleImageHover({
     ratioRef,
     canvasRectRef,
     particlesRef,
+    frameRef,
     drawParticles,
     drawCanvas,
   };

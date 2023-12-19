@@ -11,13 +11,13 @@ $ yarn add react-spread-particle-image
 ## Usage
 ### Basic Usage
 ```tsx
-import ReactSpreadParticleImage from 'react-spread-particle-image';
+import SpreadParticleImage from 'react-spread-particle-image';
 
 const myCoolImage = 'https://mycdn/mycoolimage.jpg';
 
 const App = () => {
   return (
-    <ReactSpreadParticleImage src={myCoolImage} />
+    <SpreadParticleImage src={myCoolImage} />
   );
 };
 

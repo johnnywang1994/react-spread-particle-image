@@ -1,4 +1,4 @@
-import React, { useEffect, CSSProperties } from 'react';
+import React, { useEffect, CSSProperties, useTransition } from 'react';
 import useParticleImageHover, { Options } from 'src/useParticleImageHover.js';
 
 export type SpreadParticleImageProps = Options & {
@@ -9,13 +9,14 @@ export type SpreadParticleImageProps = Options & {
 }
 
 const SpreadParticleImage = (props: SpreadParticleImageProps) => {
-  const { canvasRef, ctx, initCanvas, drawCanvas } = useParticleImageHover(props);
+  const { canvasRef, ctx, frameRef, initCanvas, drawCanvas } = useParticleImageHover(props);
 
   useEffect(() => {
     if (ctx) {
       initCanvas(props.src);
       drawCanvas();
     }
+    return () => cancelAnimationFrame(frameRef.current);
   }, [ctx]);
 
   return (

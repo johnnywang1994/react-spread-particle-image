@@ -16,6 +16,14 @@ const loadImg = (url: string, crossOrigin = false): Promise<HTMLImageElement> =>
     img.onload = () => resolve(img);
   });
 
+const getResizeObserver = (callback: (el: Element) => void) => {
+  return new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      callback(entry.target);
+    }
+  });
+};
+
 const getAveragePixelByRowCol = (
   imageData: ImageData["data"],
   width: number,
@@ -115,36 +123,35 @@ export default function useCanvasImage({ quality = 4 } = {}) {
     const canvas = canvasRef.current;
     canvasWidth = canvas.width = width;
     canvasHeight = canvas.height = height;
-    // first mount ratio
-    console.log(canvasWidth, canvasRectRef.current.width);
-    ratioRef.current = canvasWidth / canvasRectRef.current.width;
 
     ctx.drawImage(img, 0, 0, width, height);
 
     const imageData = ctx.getImageData(0, 0, width, height);
     const particles = convertToParticles(imageData.data);
     particlesRef.current = particles;
+
+    // observe for canvas resize
+    const observer = getResizeObserver((el) => {
+      canvasRectRef.current = canvas.getBoundingClientRect();
+      ratioRef.current = canvasWidth / canvasRectRef.current.width;
+    });
+    observer.observe(canvas);
+  };
+
+  const resetCanvas = () => {
+    setCtx(undefined);
+    particlesRef.current = [];
+    ratioRef.current = 1;
+    canvasRectRef.current = undefined;
   };
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    let timer: number;
     if (canvas) {
       setCtx(canvas.getContext("2d"));
-      const resize = () => {
-        const canvas = canvasRef.current as HTMLCanvasElement;
-        canvasRectRef.current = canvas.getBoundingClientRect();
-        ratioRef.current = canvas.width / canvasRectRef.current.width;
-      };
-      const handleResize = () => {
-        clearTimeout(timer);
-        timer = setTimeout(resize, 200);
-      };
-      resize();
-      window.addEventListener("resize", handleResize, { passive: true });
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
+      // first mount ratio
+      canvasRectRef.current = canvas.getBoundingClientRect();
+      ratioRef.current = canvas.width / canvasRectRef.current.width;
     }
   }, []);
 
@@ -155,6 +162,7 @@ export default function useCanvasImage({ quality = 4 } = {}) {
     particlesRef,
     ctx,
     initCanvas,
+    resetCanvas,
     drawParticles,
   };
 }
