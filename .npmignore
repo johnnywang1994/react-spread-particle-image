@@ -1,0 +1,7 @@
+.gitignore
+.eslintrc.cjs
+tsup.config.js
+yarn.lock
+/src/
+.github
+tsconfig.json

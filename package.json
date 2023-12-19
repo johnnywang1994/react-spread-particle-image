@@ -1,0 +1,60 @@
+{
+  "name": "react-spread-particle-image",
+  "version": "1.0.0",
+  "description": "React component to make interact with image into spread particle animation",
+  "author": "johnnywang1994",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "lint": "eslint ./src/**/*",
+    "dev": "watch 'yarn lint' ./src",
+    "build": "tsup",
+    "ci": "yarn install --immutable --immutable-cache --check-cache"
+  },
+  "devDependencies": {
+    "@johnnywang/eslint-config": "^1.0.4",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4",
+    "eslint": "^8.9.0",
+    "tsup": "^5.11.13",
+    "typescript": "^4.5.5",
+    "watch": "^1.0.2"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnnywang1994/react-spread-particle-image.git"
+  },
+  "bugs": {
+    "url": "https://github.com/johnnywang1994/react-spread-particle-image/issues"
+  },
+  "homepage": "https://github.com/johnnywang1994/react-spread-particle-image#readme",
+  "keywords": [
+    "react",
+    "image",
+    "spread-animation"
+  ]
+}
